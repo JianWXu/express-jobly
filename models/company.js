@@ -40,18 +40,24 @@ class Company {
   }
 
   /** Find all companies.
+   * Can filter on provided search filters:
+   * -minEmployees
+   * -maxEmployees
+   * -nameLike( will find case-insensitive and partial matches)
+   *
+   * throw error when minEmployees is greater than maxEmployees
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
   static async findAll(param = {}) {
     const { name, minEmployee, maxEmployee } = param;
-    const res = `SELECT handle,
+    let res = `SELECT handle,
     name,
     description,
     num_employees AS "numEmployees",
     logo_url AS "logoUrl"
-  FROM companies`;
+FROM companies`;
     let whereChecks = [];
     let injectionExpressions = [];
 
@@ -60,18 +66,22 @@ class Company {
         "Maximum employee has to be greater than minimum employee"
       );
     }
+
     if (minEmployee !== undefined) {
       injectionExpressions.push(minEmployee);
       whereChecks.push(`num_employees >=$${injectionExpressions.length}`);
     }
+
     if (maxEmployee !== undefined) {
       injectionExpressions.push(maxEmployee);
-      whereChecks.push(`num_employees >=$${injectionExpressions.length}`);
+      whereChecks.push(`num_employees <=$${injectionExpressions.length}`);
     }
+
     if (name) {
-      injectionExpressions.push(name);
+      injectionExpressions.push(`%${name}%`);
       whereChecks.push(`name ILIKE $${injectionExpressions.length}`);
     }
+
     if (whereChecks.length > 0) {
       res += " WHERE " + whereChecks.join(" AND ");
     }

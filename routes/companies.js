@@ -52,11 +52,11 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   const params = req.query;
-  if (q.minEmployees !== undefined) {
-    q.minEmployees = +q.minEmployees;
+  if (params.minEmployees !== undefined) {
+    params.minEmployees = +params.minEmployees;
   }
-  if (q.maxEmployees !== undefined) {
-    q.maxEmployees = +q.maxEmployees;
+  if (params.maxEmployees !== undefined) {
+    params.maxEmployees = +params.maxEmployees;
   }
   try {
     const validator = jsonschema.validate(params, companySearchSchema);
