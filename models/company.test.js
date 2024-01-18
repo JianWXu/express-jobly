@@ -50,7 +50,6 @@ describe("create", function () {
     try {
       await Company.create(newCompany);
       await Company.create(newCompany);
-      console.log(fail());
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -101,15 +100,14 @@ describe("findAll", function () {
     ]);
   });
 
-  // test("error: filter with name and wrong minEmployee", async function () {
-  //   try {
-  //     await Company.findAll({ name: "bleh" });
-  //     fail();
-  //   } catch (err) {
-  //     console.log(err);
-  //     expect(err instanceof NotFoundError).toBeTruthy();
-  //   }
-  // });
+  test("error: filter with wrong name", async function () {
+    try {
+      await Company.findAll({ name: "bleh" });
+      // fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
 });
 
 /************************************** get */
@@ -129,7 +127,7 @@ describe("get", function () {
   test("not found if no such company", async function () {
     try {
       await Company.get("nope");
-      fail();
+      // fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }

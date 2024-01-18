@@ -16,7 +16,7 @@ class Job {
 
   static async create({ title, salary, equity, company_handle }) {
     const duplicateCheck = await db.query(
-      `SELECT title FROM jobs WHERE handle = $1`,
+      `SELECT title FROM jobs WHERE title = $1`,
       [title]
     );
 
@@ -26,7 +26,7 @@ class Job {
 
     const result = await db.query(
       `INSERT INTO jobs (title, salary, equity, company_handle)
-    VALUES ($1,$2,$3,$4) RETURNING title, salary, equity, company_handle`,
+    VALUES ($1, $2, $3, $4) RETURNING title, salary, equity, company_handle`,
       [title, salary, equity, company_handle]
     );
 
@@ -52,7 +52,7 @@ class Job {
       [title]
     );
     const job = jobRes.rows[0];
-    if (!job) throw new NotFoundError(`No company ${handle}`);
+    if (!job) throw new NotFoundError(`No job title of: ${title}`);
     return job;
   }
 
@@ -60,27 +60,33 @@ class Job {
    *
    *
    */
-  static async update(title, data) {
+  static async update(jobName, data) {
     const { setCols, values } = sqlForPartialUpdate(data, {
       title: "title",
       salary: "salary",
       equity: "equity",
+      company_handle: "company_handle",
     });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `UPDATE jobs SET ${setCols} WHERE title = ${handleVarIdx} RETURNING title, salary, equity, company_handle`;
-    const result = await db.query(querySql, [...values, title]);
+    const result = await db.query(querySql, [...values, jobName]);
     const job = result.rows[0];
-    if (!job) throw new NotFoundError(`No company: ${handle}`);
+    if (!job) {
+      throw new NotFoundError(`No job title of: ${jobName}`);
+    }
     return job;
   }
 
+  /* Deletes a job with the title input */
   static async remove(title) {
     const result = await db.query(
       `DELETE FROM jobs WHERE title = $1 RETURNING title`,
       [title]
     );
     const job = result.rows[0];
-    if (!job) throw new NotFoundError(`No company: ${title}`);
+    if (!job) throw new NotFoundError(`No job title of: ${title}`);
   }
 }
+
+module.exports = Job;
