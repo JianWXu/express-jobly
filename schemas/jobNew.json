@@ -1,0 +1,62 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://our.job.com/jobNew.schema.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+    "required": [        
+        "title",
+        "salary",
+        "equity",
+        "company_handle"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer",
+            "default": 0,
+            "title": "The id Schema",
+            "examples": [
+                1
+            ]
+        },
+        "title": {
+            "type": "string",
+            "default": "",
+            "title": "The title Schema",
+            "examples": [
+                "Conservator"
+            ]
+        },
+        "salary": {
+            "type": "integer",
+            "default": 0,
+            "title": "The salary Schema",
+            "examples": [
+                110000
+            ]
+        },
+        "equity": {
+            "type": "string",
+            "default": 0,
+            "title": "The equity Schema",
+            "examples": [
+                0
+            ]
+        },
+        "company_handle": {
+            "type": "string",
+            "default": "",
+            "title": "The company_handle Schema",
+            "examples": [
+                "watson-davis"
+            ]
+        }
+    },
+    "examples": [{
+        "id": 1,
+        "title": "Conservator",
+        "salary": 110000,
+        "equity": 0,
+        "company_handle": "watson-davis"
+    }]
+}
