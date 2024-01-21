@@ -42,10 +42,16 @@ router.post("/", ensureIsAdmin, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  const params = req.query;
-  if (params.salary !== undefined) {
-    params.salary = +params.salary;
+  let params = req.query;
+
+  if (params.minSalary !== undefined) {
+    params.minSalary = parseInt(params.minSalary);
   }
+  if (params.hasEquity === "true") {
+    params.hasEquity = true;
+  }
+  console.log(params);
+
   try {
     const validator = jsonschema.validate(params, jobSearchSchema);
     if (!validator.valid) {
@@ -107,7 +113,7 @@ router.patch("/:handle", ensureIsAdmin, async function (req, res, next) {
 */
 router.delete("/:handle", ensureIsAdmin, async function (req, res, next) {
   try {
-    await job.remove(req.params.handle);
+    await Job.remove(req.params.handle);
     return res.json({ deleted: req.params.handle });
   } catch (err) {
     return next(err);

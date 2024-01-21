@@ -65,6 +65,44 @@ describe("findAll", function () {
       { title: "j3", salary: null, equity: "0.001", company_handle: "c3" },
     ]);
   });
+
+  test("works: filter on title", async function () {
+    let jobs = await Job.findAll({ title: "j1" });
+    expect(jobs).toEqual([
+      {
+        title: "j1",
+        salary: 1,
+        equity: "0.01",
+        company_handle: "c1",
+      },
+    ]);
+  });
+
+  test("works: filter on salary", async function () {
+    let jobs = await Job.findAll({ minSalary: 2 });
+    expect(jobs).toEqual([
+      {
+        title: "j2",
+        salary: 2,
+        equity: null,
+        company_handle: "c2",
+      },
+    ]);
+  });
+
+  test("works: filter on equity", async function () {
+    let jobs = await Job.findAll({ hasEquity: true });
+    console.log(jobs);
+    expect(jobs).toEqual([
+      {
+        title: "j1",
+        salary: 1,
+        equity: "0.01",
+        company_handle: "c1",
+      },
+      { title: "j3", salary: null, equity: "0.001", company_handle: "c3" },
+    ]);
+  });
 });
 
 /***************************** get */
@@ -89,6 +127,8 @@ describe("get", function () {
     }
   });
 });
+
+/***************************** patch */
 
 describe("update", function () {
   const updateData = {

@@ -39,11 +39,38 @@ class Job {
    * Returns [{title, salary, equity, company_handle}]
    */
 
-  static async findAll() {
-    const result = await db.query(
-      `SELECT title, salary, equity, company_handle FROM jobs`
-    );
-    return result.rows;
+  static async findAll(param = {}) {
+    const { title, minSalary, hasEquity } = param;
+    let res = `SELECT title, salary, equity, company_handle FROM jobs`;
+    let whereChecks = [];
+    let injectionExpressions = [];
+
+    if (title) {
+      injectionExpressions.push(`%${title}%`);
+      whereChecks.push(`title ILIKE $${injectionExpressions.length}`);
+    }
+
+    if (minSalary) {
+      injectionExpressions.push(minSalary);
+      whereChecks.push(
+        `salary IS NOT NULL AND salary >= $${injectionExpressions.length}`
+      );
+    }
+
+    if (hasEquity === true) {
+      injectionExpressions.push(0);
+      whereChecks.push(
+        `equity IS NOT NULL AND equity > $${injectionExpressions.length}`
+      );
+    }
+
+    if (whereChecks.length > 0) {
+      res += " WHERE " + whereChecks.join(" AND ");
+    }
+
+    res += " ORDER BY title";
+    const jobsRes = await db.query(res, injectionExpressions);
+    return jobsRes.rows;
   }
 
   static async get(title) {
