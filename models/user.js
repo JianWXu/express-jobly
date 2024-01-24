@@ -201,6 +201,26 @@ class User {
       throw new BadRequestError(`Duplicate job application`);
     }
 
+    const doesJobExist = await db.query(
+      `SELECT id
+       FROM jobs
+       WHERE id = $1`,
+      [job_id]
+    );
+    const job = doesJobExist.rows[0];
+
+    if (!job) throw new NotFoundError(`No job: ${job_id}`);
+
+    const doesUserExist = await db.query(
+      `SELECT username
+       FROM users
+       WHERE username = $1`,
+      [username]
+    );
+    const user = doesUserExist.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
     let res = await db.query(
       `INSERT INTO applications (username, job_id) VALUES ($1, $2) RETURNING job_id`,
       [username, job_id]

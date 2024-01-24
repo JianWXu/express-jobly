@@ -267,14 +267,62 @@ describe("PATCH /users/:username", () => {
 /************************************** POST /users/:username/jobs/:id */
 
 describe("POST /users/:username/jobs/:id", function () {
-  test("works for users", async function () {
+  test("works for admin", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
     const resp = await request(app)
-      .post(`/users/u1/jobs/${testJobIds[0]}`)
+      .post(`/users/u1/jobs/${jobId}`)
       .set("authorization", `Bearer ${adminToken}`);
-    // console.log(resp.body);
-    // const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
-    // const jobId = job.rows[0].id;
-    expect(resp.body).toEqual({ applied: testJobIds[0] });
+
+    expect(resp.body).toEqual({ applied: jobId });
+  });
+
+  test("works for same user", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobId}`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.body).toEqual({ applied: jobId });
+  });
+
+  test("unauth for others", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobId}`)
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth for anon", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
+    const resp = await request(app).post(`/users/u1/jobs/${jobId}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found for no such username", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
+    const resp = await request(app)
+      .post(`/users/nope/jobs/${jobId}`)
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("not found for no such job", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/0`)
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+
+  test("bad request invalid job id", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/0`)
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
   });
 });
 

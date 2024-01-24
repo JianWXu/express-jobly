@@ -13,7 +13,6 @@ async function commonBeforeAll() {
   await db.query("DELETE FROM users");
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM companies");
-  await db.query("DELETE FROM jobs");
 
   await Company.create({
     handle: "c1",
@@ -36,30 +35,6 @@ async function commonBeforeAll() {
     description: "Desc3",
     logoUrl: "http://c3.img",
   });
-
-  // testJobIds[0] = (
-  //   await Job.create({
-  //     title: "J1",
-  //     salary: 1,
-  //     equity: "0.1",
-  //     companyHandle: "c3",
-  //   })
-  // ).id;
-  // testJobIds[1] = (
-  //   await Job.create({
-  //     title: "J2",
-  //     salary: 2,
-  //     equity: "0.2",
-  //     companyHandle: "c3",
-  //   })
-  // ).id;
-  // testJobIds[2] = (
-  //   await Job.create({
-  //     title: "J3",
-  //     salary: 3,
-  //     /* equity null */ companyHandle: "c3",
-  //   })
-  // ).id;
 
   await User.register({
     username: "u1",
@@ -104,7 +79,16 @@ async function commonBeforeAll() {
     company_handle: "c3",
   });
 
-  // await User.applyToJob("u1", testJobIds[0]);
+  // testJobIds[0] = (
+  //   await Job.create({
+  //     title: "j4",
+  //     salary: 1,
+  //     equity: "0.1",
+  //     companyHandle: "c3",
+  //   })
+  // ).id;
+
+  // await User.applyJob("u1", testJobIds[0]);
 }
 
 async function commonBeforeEach() {

@@ -117,7 +117,7 @@ router.patch(
  * Authorization required: login or admin
  **/
 router.post(
-  "/users/:username/jobs/:id",
+  "/:username/jobs/:id",
   ensureIsAdminOrUser,
   async function (req, res, next) {
     try {
