@@ -107,6 +107,29 @@ router.patch(
   }
 );
 
+/** POST /users/[username]/jobs/[id] { user, job_id } => { user, job_id }
+ *
+ * Data can include:
+ *   { user, job_id }
+ *
+ * Returns { all job_id applied by user }
+ *
+ * Authorization required: login or admin
+ **/
+router.post(
+  "/users/:username/jobs/:id",
+  ensureIsAdminOrUser,
+  async function (req, res, next) {
+    try {
+      const jobId = +req.params.id;
+      await User.applyJob(req.params.username, jobId);
+      return res.json({ applied: jobId });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
 /** DELETE /[username]  =>  { deleted: username }
  *
  * Authorization required: login

@@ -116,15 +116,14 @@ describe("GET /companies", function () {
 describe("GET /companies/:handle", function () {
   test("works for anon", async function () {
     const resp = await request(app).get(`/companies/c1`);
-    expect(resp.body).toEqual({
-      company: {
-        handle: "c1",
-        name: "C1",
-        description: "Desc1",
-        numEmployees: 1,
-        logoUrl: "http://c1.img",
-      },
+    expect(resp.body.company).toEqual({
+      handle: "c1",
+      name: "C1",
+      description: "Desc1",
+      numEmployees: 1,
+      logoUrl: "http://c1.img",
     });
+    expect(resp.body.jobs[0].title).toEqual("j1");
   });
 
   test("works for anon: company w/o jobs", async function () {
@@ -204,6 +203,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(400);
   });
 });
+
 
 /************************************** DELETE /companies/:handle */
 

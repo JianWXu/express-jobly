@@ -11,7 +11,9 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  testJobIds,
   u1Token,
+  u2Token,
   adminToken,
 } = require("./_testCommon");
 
@@ -259,6 +261,20 @@ describe("PATCH /users/:username", () => {
     });
     const isSuccessful = await User.authenticate("u1", "new-password");
     expect(isSuccessful).toBeTruthy();
+  });
+});
+
+/************************************** POST /users/:username/jobs/:id */
+
+describe("POST /users/:username/jobs/:id", function () {
+  test("works for users", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${testJobIds[0]}`)
+      .set("authorization", `Bearer ${adminToken}`);
+    // console.log(resp.body);
+    // const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    // const jobId = job.rows[0].id;
+    expect(resp.body).toEqual({ applied: testJobIds[0] });
   });
 });
 

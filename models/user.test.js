@@ -209,13 +209,35 @@ describe("update", function () {
   });
 });
 
+/************************************** applyJob */
+
+describe("applyJob", function () {
+  test("works", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title = 'j1'`);
+    const jobId = job.rows[0].id;
+    const res = await User.applyJob("u1", jobId);
+    expect(res).toEqual({ job_id: jobId });
+  });
+
+  test("bad request if duplicate application", async function () {
+    const job = await db.query(`SELECT id from jobs WHERE title= 'j1'`);
+    const jobId = job.rows[0].id;
+    try {
+      await User.applyJob("u1", jobId);
+      await User.applyJob("u1", jobId);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});
+
 /************************************** remove */
 
 describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
-    const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+    const res = await db.query("SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 

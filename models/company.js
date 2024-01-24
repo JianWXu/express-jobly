@@ -100,6 +100,7 @@ FROM companies`;
    **/
 
   static async get(handle) {
+    let arr = [];
     const companyRes = await db.query(
       `SELECT handle,
                   name,
@@ -115,7 +116,22 @@ FROM companies`;
 
     if (!company) throw new NotFoundError(`No company: ${handle}`);
 
-    return company;
+    arr.push(company);
+
+    const companyJobsRes = await db.query(
+      `SELECT id, title, salary, equity FROM jobs INNER JOIN companies ON company_handle=$1`,
+      [handle]
+    );
+
+    const jobs = companyJobsRes.rows;
+
+    arr.push(jobs);
+
+    if (arr[1].length === 0) {
+      arr.pop();
+    }
+
+    return arr;
   }
 
   /** Update company data with `data`.

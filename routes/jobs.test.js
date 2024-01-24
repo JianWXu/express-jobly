@@ -77,7 +77,7 @@ describe("GET /jobs", function () {
           title: "j2",
           salary: 2,
           equity: null,
-          company_handle: "c2",
+          company_handle: "c3",
         },
         {
           title: "j3",
@@ -110,15 +110,13 @@ describe("GET /jobs", function () {
 
   test("ok with salary filter", async function () {
     const resp = await request(app).get("/jobs?minSalary=2");
-    console.log(resp.body);
     expect(resp.body).toEqual({
-      jobs: [{ title: "j2", salary: 2, equity: null, company_handle: "c2" }],
+      jobs: [{ title: "j2", salary: 2, equity: null, company_handle: "c3" }],
     });
   });
 
   test("ok with equity filter", async function () {
     const resp = await request(app).get("/jobs?hasEquity=true");
-    console.log(resp.body);
     expect(resp.body).toEqual({
       jobs: [
         { title: "j1", salary: 1, equity: "0.01", company_handle: "c1" },

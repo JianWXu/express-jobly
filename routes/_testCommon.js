@@ -6,6 +6,8 @@ const Company = require("../models/company");
 const Job = require("../models/job.js");
 const { createToken } = require("../helpers/tokens");
 
+const testJobIds = [];
+
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users");
@@ -34,6 +36,30 @@ async function commonBeforeAll() {
     description: "Desc3",
     logoUrl: "http://c3.img",
   });
+
+  // testJobIds[0] = (
+  //   await Job.create({
+  //     title: "J1",
+  //     salary: 1,
+  //     equity: "0.1",
+  //     companyHandle: "c3",
+  //   })
+  // ).id;
+  // testJobIds[1] = (
+  //   await Job.create({
+  //     title: "J2",
+  //     salary: 2,
+  //     equity: "0.2",
+  //     companyHandle: "c3",
+  //   })
+  // ).id;
+  // testJobIds[2] = (
+  //   await Job.create({
+  //     title: "J3",
+  //     salary: 3,
+  //     /* equity null */ companyHandle: "c3",
+  //   })
+  // ).id;
 
   await User.register({
     username: "u1",
@@ -69,7 +95,7 @@ async function commonBeforeAll() {
     title: "j2",
     salary: 2,
     equity: null,
-    company_handle: "c2",
+    company_handle: "c3",
   });
   await Job.create({
     title: "j3",
@@ -77,6 +103,8 @@ async function commonBeforeAll() {
     equity: "0.03",
     company_handle: "c3",
   });
+
+  // await User.applyToJob("u1", testJobIds[0]);
 }
 
 async function commonBeforeEach() {
@@ -100,6 +128,7 @@ module.exports = {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  testJobIds,
   u1Token,
   u2Token,
   adminToken,

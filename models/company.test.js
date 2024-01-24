@@ -113,16 +113,16 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
-  test("works", async function () {
-    let company = await Company.get("c1");
-    expect(company).toEqual({
-      handle: "c1",
-      name: "C1",
-      description: "Desc1",
-      numEmployees: 1,
-      logoUrl: "http://c1.img",
-    });
-  });
+  // test("works", async function () {
+  //   let company = await Company.get("c1");
+  //   expect(company).toEqual({
+  //     handle: "c1",
+  //     name: "C1",
+  //     description: "Desc1",
+  //     numEmployees: 1,
+  //     logoUrl: "http://c1.img",
+  //   });
+  // });
 
   test("not found if no such company", async function () {
     try {
@@ -131,6 +131,22 @@ describe("get", function () {
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
+  });
+});
+
+/************************************** getJob */
+
+describe("get company info along with job associated", function () {
+  test("works", async function () {
+    let company = await Company.get("c1");
+    expect(company[0]).toEqual({
+      handle: "c1",
+      name: "C1",
+      description: "Desc1",
+      numEmployees: 1,
+      logoUrl: "http://c1.img",
+    });
+    expect(company[1][0].title).toEqual("j1");
   });
 });
 

@@ -50,7 +50,6 @@ router.get("/", async function (req, res, next) {
   if (params.hasEquity === "true") {
     params.hasEquity = true;
   }
-  console.log(params);
 
   try {
     const validator = jsonschema.validate(params, jobSearchSchema);
